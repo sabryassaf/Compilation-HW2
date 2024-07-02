@@ -8,13 +8,14 @@ int yyerror(const char *s);
 
 %token INT BYTE B BOOL TRUE FALSE IF RETURN WHILE BREAK CONTINUE SC ID NUM STRING
 
-%right ASSIGN RELOP
+%right ASSIGN 
 %left OR
 %left AND
+%left ISEQUAL
+%left RELOP
 %left ADD SUB
 %left MULTIPLY DIVIDE
 %right NOT
-%left BINOP
 %right ELSE
 %left LPAREN RPAREN LBRACE RBRACE 
 
@@ -28,7 +29,7 @@ Statement: LBRACE Statements RBRACE                                     {output:
             | Type ID ASSIGN Exp SC                                     {output::printProductionRule(6);}
             | ID ASSIGN Exp SC                                          {output::printProductionRule(7);}
             | Call SC                                                   {output::printProductionRule(8);}
-            | RETURN Exp SC                                             {output::printProductionRule(9);}
+            | RETURN SC                                                 {output::printProductionRule(9);}
             | IF LPAREN Exp RPAREN Statement %prec IF                   {output::printProductionRule(10);}
             | IF LPAREN Exp RPAREN Statement ELSE Statement             {output::printProductionRule(11);}
             | WHILE LPAREN Exp RPAREN Statement                         {output::printProductionRule(12);}
@@ -42,7 +43,10 @@ Type:   INT                                                             {output:
         | BOOL                                                          {output::printProductionRule(18);};
 
 Exp:    LPAREN Exp RPAREN                                               {output::printProductionRule(19);}
-        | Exp BINOP Exp                                                 {output::printProductionRule(20);}
+        | Exp ADD Exp                                                   {output::printProductionRule(20);}
+        | Exp SUB Exp                                                   {output::printProductionRule(20);}
+        | Exp DIVIDE Exp                                                {output::printProductionRule(20);}
+        | Exp MULTIPLY Exp                                              {output::printProductionRule(20);}
         | ID                                                            {output::printProductionRule(21);}
         | Call                                                          {output::printProductionRule(22);}
         | NUM                                                           {output::printProductionRule(23);}
@@ -53,17 +57,16 @@ Exp:    LPAREN Exp RPAREN                                               {output:
         | NOT Exp                                                       {output::printProductionRule(28);}
         | Exp AND Exp                                                   {output::printProductionRule(29);}
         | Exp OR Exp                                                    {output::printProductionRule(30);}
+        | Exp ISEQUAL Exp                                               {output::printProductionRule(31);}
         | Exp RELOP Exp                                                 {output::printProductionRule(31);}
         | LPAREN Type RPAREN Exp                                        {output::printProductionRule(32);};
 
 %%
 int yyerror(const char *s) {
     output::errorSyn(yylineno);
-    exit(0);
-}
+    exit(0);}
 
 int main() {
-    yyparse();
-    return 0;
+    return yyparse();
 }
 
