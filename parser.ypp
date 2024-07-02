@@ -1,0 +1,68 @@
+%{
+#include <iostream>
+#include "output.hpp"
+extern int yylex();
+extern int yylineno;
+int yyerror(const char *s);
+%}
+
+%token INT BYTE B BOOL TRUE FALSE IF RETURN WHILE BREAK CONTINUE SC ID NUM STRING
+
+%right ASSIGN RELOP
+%left OR
+%left AND
+%left ADD SUB
+%left MULTIPLY DIVIDE
+%right NOT
+%right ELSE
+%left LPAREN RPAREN LBRACE RBRACE 
+
+%%
+Program: Statements                                                     {output::printProductionLine(1)};
+Statements: Statement Statements                                        {output::printProductionLine(3);} 
+            | Statement                                                 {output::printProductionLine(2)};
+
+Statement: LBRACE Statements RBRACE                                     {output::printProductionLine(4)}
+            | Type ID SC                                                {output::printProductionLine(5)}
+            | Type ID ASSIGN Expression SC                              {output::printProductionLine(6)}
+            | ID ASSIGN Expression SC                                   {output::printProductionLine(7)}
+            | Call SC                                                   {output::printProductionLine(8)}
+            | RETURN Expression SC                                      {output::printProductionLine(9)}
+            | IF LPAREN Exp RPAREN Statement %prec IF                   {output::printProductionLine(10)}
+            | IF LPAREN Exp RPAREN Statement ELSE Statement             {output::printProductionLine(11)}
+            | WHILE LPAREN Exp RPAREN Statement                         {output::printProductionLine(12)}
+            | BREAK SC                                                  {output::printProductionLine(13)}
+            | CONTINUE SC                                               {output::printProductionLine(14)};
+
+Call:   ID LPAREN Exp RPAREN                                            {output::printProductionLine(15)};
+
+Type:   INT                                                             {output::printProductionLine(16)}
+        | BYTE                                                          {output::printProductionLine(17)}
+        | BOOL                                                          {output::printProductionLine(18)};
+
+Exp:    LPAREN Exp RPAREN                                               {output::printProductionLine(19)}
+        | Exp BINOP Exp                                                 {output::printProductionLine(20)}
+        | ID                                                            {output::printProductionLine(21)}
+        | Call                                                          {output::printProductionLine(22)}
+        | NUM                                                           {output::printProductionLine(23)}
+        | NUM B                                                         {output::printProductionLine(24)}
+        | STRING                                                        {output::printProductionLine(25)}
+        | TRUE                                                          {output::printProductionLine(26)}
+        | FALSE                                                         {output::printProductionLine(27)}
+        | NOT Exp                                                       {output::printProductionLine(28)}
+        | Exp AND Exp                                                   {output::printProductionLine(29)}
+        | Exp OR Exp                                                    {output::printProductionLine(30)}
+        | Exp RELOP Exp                                                 {output::printProductionLine(31)}
+        | LPAREN Type RPAREN Exp                                        {output::printProductionLine(32)};
+
+%%
+int yyerror(const char *s) {
+    output::errorSyn(yylineno);
+    exit(0);
+}
+
+int main() {
+    yyparse();
+    return 0;
+}
+
