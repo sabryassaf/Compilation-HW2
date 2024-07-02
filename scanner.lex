@@ -42,7 +42,7 @@ continue        { return CONTINUE; }
 {ID}            { return ID; } 
 0|[1-9]{digit}* { return NUM;}
 \"([^\n\r\"\\]|\\[rnt"\\])+\"       { return STRING; }
-\/\/[^\r\n]*[\r|\n|\r\n]?                   ;
+\/\/[^\r\n]*\r?\n?                   ;
 {whitespace}    { /* ignore whitespace */ }
 .               { output::errorLex(yylineno);
                     exit(0);}

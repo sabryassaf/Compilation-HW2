@@ -15,8 +15,8 @@ int yyerror(const char *s);
 %left RELOP
 %left ADD SUB
 %left MULTIPLY DIVIDE
-%right NOT
 %right ELSE
+%right NOT
 %left LPAREN RPAREN LBRACE RBRACE 
 
 %%
