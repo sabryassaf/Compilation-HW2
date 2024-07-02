@@ -27,25 +27,20 @@ else            { return ELSE; }
 while           { return WHILE; }
 break           { return BREAK; }
 continue        { return CONTINUE; }
-;               { return SC; }
-\(              { return LPAREN; }
-\)              { return RPAREN; }
-\{              { return LBRACE; }
-\}              { return RBRACE; }
-=               { return ASSIGN; }
-==              { return RELOP; }
-!=              { return RELOP; }
-<               { return RELOP; }
->               { return RELOP; }
-<=              { return RELOP; }
->=              { return RELOP; }
+(\;)            { return SC; }
+(\()            { return LPAREN; }
+(\))            { return RPAREN; }
+(\{)            { return LBRACE; }
+(\})            { return RBRACE; }
+(=)             { return ASSIGN; }
+==|!=|<|>|<=|>= { return RELOP; }
 \+              { return BINOP; }
 \-              { return BINOP; }
 \*              { return BINOP; }
 \/              { return BINOP; }
 {ID}            { return ID; } 
 0|[1-9]{digit}* { return NUM;}
-\"([^\n\r\"\\]|\\[rnt"\\])+\"       { return STRING; })
+\"([^\n\r\"\\]|\\[rnt"\\])+\"       { return STRING; }
 {whitespace}    { /* ignore whitespace */ }
 
 .               { output::errorLex(yylineno);
