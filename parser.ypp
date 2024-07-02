@@ -20,9 +20,9 @@ int yyerror(const char *s);
 
 %%
 Program: Statements                                                     {output::printProductionRule(1);};
-Statements: Statement Statements                                        {output::printProductionRule(3);} 
-            | Statement                                                 {output::printProductionRule(2);};
-
+Statements: Statement                                                   {output::printProductionRule(2);}
+            | Statements Statement                                      {output::printProductionRule(3);}; 
+                                                                        
 Statement: LBRACE Statements RBRACE                                     {output::printProductionRule(4);}
             | Type ID SC                                                {output::printProductionRule(5);}
             | Type ID ASSIGN Exp SC                                     {output::printProductionRule(6);}
